@@ -1,0 +1,25 @@
+{
+  "folder": "02-scd2-dimension",
+  "title": "Cleaning Up the Customer Feed Before It Hits the Warehouse",
+  "pattern": "Dimension with history (SCD2)",
+  "blueprint": "scd2_dimension",
+  "scenario_id": "p003",
+  "tools": [
+    "T-SQL",
+    "pandas",
+    "Python"
+  ],
+  "built": "I wrote the source extract in T-SQL, cleaning and quarantine in pandas, an SCD2 dimension load in T-SQL that is safe to re-run and a reconciliation report in Python.",
+  "techniques": [
+    "Cleaning and standardising values",
+    "De-duplication, latest version wins",
+    "Slowly changing dimension (SCD2)",
+    "Load that is safe to run twice",
+    "Reconciliation of counts and totals"
+  ],
+  "score": 5.4,
+  "label": "Junior task",
+  "assisted": false,
+  "checked_on": "2026-11-04",
+  "code_sha256": "23431a18da0d294a9a68ac6a2f5fb0a2a2e0f4e4a13019ed3115c07ac46b24f3"
+}

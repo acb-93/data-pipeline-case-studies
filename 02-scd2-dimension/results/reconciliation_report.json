@@ -1,0 +1,12 @@
+{
+  "source_rows": 20536,
+  "accepted_rows": 20400,
+  "rejected_rows": 136,
+  "source_balances": true,
+  "new_customers": 600,
+  "changed_customers": 1000,
+  "unchanged_customers": 18800,
+  "dimension_rows": 25690,
+  "current_rows": 20600,
+  "one_current_per_customer": true
+}
