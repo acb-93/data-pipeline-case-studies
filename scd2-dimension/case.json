@@ -1,5 +1,5 @@
 {
-  "folder": "02-scd2-dimension",
+  "folder": "scd2-dimension",
   "title": "Cleaning Up the Customer Feed Before It Hits the Warehouse",
   "pattern": "Dimension with history (SCD2)",
   "blueprint": "scd2_dimension",
