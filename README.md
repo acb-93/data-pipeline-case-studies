@@ -14,4 +14,4 @@ Batch pipelines from my data-engineering practice: extract, clean and quarantine
 - Load that is safe to run twice — [02](02-scd2-dimension/)
 - Reconciliation of counts and totals — [02](02-scd2-dimension/)
 
-The reported figures come from PipelineFab's quality and reconciliation outputs. The scenarios and their synthetic data come from PipelineFab, a practice platform.
+Every number in these READMEs comes from the pipeline's own reconciliation output. The scenarios and their synthetic data come from PipelineFab, a practice platform.
