@@ -10,7 +10,7 @@ WITH (FORMAT = 'CSV',FIRSTROW = 2, FIELDTERMINATOR = ',',
 DECLARE @LoadDate date = '2024-07-01';
 
 SET XACT_ABORT ON;
-BEGIN TRY;
+BEGIN TRY
     BEGIN TRAN;
         UPDATE d SET d.IsCurrent = 0, d.ExpiryDate = DATEADD(DAY,-1,@LoadDate) FROM scn.DimCustomer AS d
         INNER JOIN landing.clean_customers AS cl ON cl.customer_id = d.CustomerID
@@ -29,7 +29,7 @@ BEGIN TRY;
         SET d.CompanyName = cl.company_name,
             d.ContactName = cl.contact_name
             FROM scn.DimCustomer AS d
-            INNER JOIN landing.clean_customers AS CL ON cl.customer_id = d.CustomerID
+            INNER JOIN landing.clean_customers AS cl ON cl.customer_id = d.CustomerID
             WHERE (d.CompanyName IS DISTINCT FROM cl.company_name OR
                   d.ContactName IS DISTINCT FROM cl.contact_name) AND d.IsCurrent = 1
     COMMIT TRAN;

@@ -122,7 +122,7 @@ From `outputs/reconciliation_report.json`, produced by my reconciliation stage:
 
 ## Validation
 
-Every stage passed the platform's automated checks on 2026-11-26. What was checked on my stages:
+Every stage passed the platform's automated checks on 2026-11-27. What was checked on my stages:
 
 - **01 · Extract today's customer snapshot:** columns and types match the agreed contract; the output matches the platform's reference result, which stays hidden while I work.
 - **02 · Clean and validate:** columns and types match the agreed contract; every source row ends up either accepted or rejected, none lost or duplicated; the output matches the platform's reference result, which stays hidden while I work.
