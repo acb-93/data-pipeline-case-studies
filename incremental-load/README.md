@@ -157,10 +157,10 @@ Every stage passed the platform's automated checks on 2026-11-26. What was check
 <summary>Inputs and outputs of every stage</summary>
 
 **01 · Extract tonight's orders (since the watermark)**  
-Writes `raw/query/orders.csv`
+Only the query: stage 02 runs it and writes the extract file
 
 **02 · Clean and validate**  
-Reads the query from stage 01 → writes `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.csv`
+Runs the query from stage 01, writes `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.csv`
 
 **03 · Quality gate** *(built into the platform)*  
 Reads `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.csv` → writes `outputs/quality_report.json`, `quarantine/gate_quarantine.csv`
@@ -169,7 +169,7 @@ Reads `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.
 Reads `outputs/clean_orders.csv`, `raw/orders.csv` → writes `scn.FactOrders`, `scn.etl_watermark`
 
 **05 · Reconcile**  
-Reads `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.csv`, `scn.FactOrders`, `scn.etl_watermark` → writes `outputs/reconciliation_report.json`
+Reads `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.csv`, `outputs/loaded_orders.csv` (export of `scn.FactOrders`), `outputs/etl_watermark.csv` (export of `scn.etl_watermark`) → writes `outputs/reconciliation_report.json`
 
 
 </details>

@@ -1,6 +1,7 @@
 """
 02 · Clean and validate (pandas)
 
+Runs:   01_extract.sql on Staging with pyodbc
 Writes: raw/orders.csv, outputs/clean_orders.csv, quarantine/rejected_orders.csv
 """
 

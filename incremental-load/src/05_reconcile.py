@@ -1,7 +1,7 @@
 """
 05 · Reconcile (Python)
 
-Reads:  raw/orders.csv, outputs/clean_orders.csv, quarantine/rejected_orders.csv, scn.FactOrders, scn.etl_watermark
+Reads:  raw/orders.csv, outputs/clean_orders.csv, quarantine/rejected_orders.csv, outputs/loaded_orders.csv (export of scn.FactOrders), outputs/etl_watermark.csv (export of scn.etl_watermark)
 Writes: outputs/reconciliation_report.json
 """
 
