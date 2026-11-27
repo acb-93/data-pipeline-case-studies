@@ -177,20 +177,6 @@ Reads `raw/orders.csv`, `outputs/clean_orders.csv`, `quarantine/rejected_orders.
 <details>
 <summary>Data contracts of my outputs</summary>
 
-**raw/query/orders.csv**
-
-| Column | Type | Can be empty | Key |
-|---|---|---|---|
-| order_id | string | no |  |
-| customer_id | string | yes |  |
-| employee_id | string | yes |  |
-| order_date | string | yes |  |
-| status | string | yes |  |
-| total_amount | string | yes |  |
-| currency | string | yes |  |
-| source_system | string | yes |  |
-| loaded_at | string | yes |  |
-
 **raw/orders.csv**
 
 | Column | Type | Can be empty | Key |
