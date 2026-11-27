@@ -2,19 +2,19 @@
 
 > **What I built:** I wrote the source extract in T-SQL, cleaning and quarantine in pandas, an SCD2 dimension load in T-SQL that is safe to re-run and a reconciliation report in Python.  
 > **Result:** 20,536 source rows → 20,400 accepted, 136 quarantined with a reason; 600 new and 1,000 changed customers; checks: source = accepted + rejected, one current version per customer ✓.  
-> **Stack:** T-SQL, pandas, Python · **Difficulty:** 5.4/10 (Junior task) · **Independent solution**  
+> **Stack:** T-SQL, pandas, Python · **Level:** junior task (5.4/10 on the platform's difficulty scale)  
 
-<sub>A practice case from PipelineFab, a data-engineering practice platform: the scenario, its synthetic data and the business rules come from the platform; the code in `src/` and the results are mine. Stages the platform wrote are named as such and not included.</sub>
+<sub>A practice case from [PipelineFab](https://acbworkspace.netlify.app/#tours), the data-engineering practice platform I built for myself. The platform generates the scenario, its synthetic data and the business rules, and runs a standard quality gate; the code in `src/` and the results are mine. Stages that come with the platform are named as such and not included.</sub>
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    s1["01 · Extract today's customer snapshot<br/><small>T-SQL · you</small>"]
-    s2["02 · Clean and validate<br/><small>pandas · you</small>"]
+    s1["01 · Extract today's customer snapshot<br/><small>T-SQL · me</small>"]
+    s2["02 · Clean and validate<br/><small>pandas · me</small>"]
     s3["03 · Quality gate<br/><small>Python · platform</small>"]
-    s4["04 · Apply the snapshot to the customer dimension<br/><small>T-SQL · you</small>"]
-    s5["05 · Reconcile<br/><small>Python · you</small>"]
+    s4["04 · Apply the snapshot to the customer dimension<br/><small>T-SQL · me</small>"]
+    s5["05 · Reconcile<br/><small>Python · me</small>"]
     s1 --> s2
     s2 --> s3
     s3 --> s4
@@ -25,37 +25,37 @@ flowchart LR
     class s3 platform
 ```
 
-Green stages are mine; grey dashed stages were provided by the platform.
+Green stages are mine; grey dashed stages come with the platform.
 
 | Stage | Task | Tool | Written by | Code |
 |---|---|---|---|---|
 | 01 | Extract today's customer snapshot | T-SQL | **Me** | [`src/01_extract.sql`](src/01_extract.sql) |
 | 02 | Clean and validate | pandas | **Me** | [`src/02_transform.py`](src/02_transform.py) |
-| 03 | Quality gate | Python | Provided by PipelineFab | — |
+| 03 | Quality gate | Python | Platform (built in) | — |
 | 04 | Apply the snapshot to the customer dimension | T-SQL | **Me** | [`src/04_load.sql`](src/04_load.sql) |
 | 05 | Reconcile | Python | **Me** | [`src/05_reconcile.py`](src/05_reconcile.py) |
 
 ## Engineering decisions
 
-**How did you detect that a record had really changed — column by column, a hash, or something else? Why that way?**
+**How did you detect that a customer had really changed?**
 
-I compared the columns directly with the current customer record in the warehouse. I checked Country, City, and CreditTier because changes in these fields need a new historical version. I also cleaned the values before comparing them, so small differences like extra spaces or country names written in different ways would not create unnecessary records. I chose this method because it is simple to understand and easy to check.
+A new row for a customer does not always mean a change. My load compares Country, City and CreditTier with the customer's current record in the warehouse. Only when one of them is different does it close the old version and open a new one. In this batch most customers (18,800) came again with the same values, so nothing changed for them.
 
-**How did you close the old version and open the new one — one MERGE, or separate UPDATE and INSERT statements? What made you choose it?**
+**Why separate UPDATE and INSERT statements instead of MERGE?**
 
-I used separate UPDATE and INSERT statements. First, I closed the old version by setting IsCurrent to 0 and updating the expiry date. Then I inserted a new version with the updated values. I chose this approach because I could control each step and keep the customer history clear. For changes to names only, I updated the existing record without creating a new version.
+In SCD Type 2 a changed customer needs two actions: close the current record, then add a new version. MERGE is good at "update if it exists, insert if not" in one statement, but doing both actions for the same customer in one MERGE is awkward. Two statements, run in order inside one transaction, were clearer for me and easier to check.
 
-**When the same record arrived more than once, how did you pick the one that wins, and how did you implement it?**
+**When the same customer arrived more than once, how did you pick the one that wins?**
 
-I used the customer ID and loaded_at date to find the latest record for each customer. I sorted the records by loaded_at, newest first, and used duplicated(keep="first") to mark every older version of the same customer. Older records and duplicate copies were moved to a separate quarantine file with a reason. This way, I could keep the customer data clean without losing the original records.
+I used loaded_at. I kept the most recent row for each customer and sent the older ones to quarantine with the reason old_record.
 
-**Which numbers did your reconciliation compare, and why are those the ones that prove the load is right?**
+**What did your reconciliation prove?**
 
-I compared the number of source, accepted, and rejected records to make sure no rows were lost. I also checked how many customers were new, changed, or unchanged after the load. Finally, I checked the total dimension rows and made sure each customer had exactly one current version. These checks helped me confirm that the data was loaded correctly and the customer history was kept.
+Stage 05 is where I checked my own work with simple sums: accepted + rejected rows must equal the source rows, new + changed + unchanged customers must equal the accepted customers, and every customer must have exactly one current record.
 
-**What would it take to make sure this feed stays clean on its own instead of needing a manual pass every time?**
+**What was the hardest part?**
 
-I would run the same cleaning and validation steps automatically for every new batch. I would also keep rejected records in a separate file with clear reasons, so the data team could review them later. Adding alerts for unexpected errors or large numbers of rejected records would make the process more reliable. This would reduce manual work and help keep the warehouse data consistent.
+SCD Type 2. It was the first time I built one, and closing the old record and opening the new one in the right order was not easy for me.
 
 ## Data, before and after
 
@@ -87,7 +87,7 @@ Rows I quarantined, one example per reason (never deleted):
 
 ## Data quality evidence
 
-The quality gate (03 · Quality gate, provided by PipelineFab) checked the output of my cleaning stage. Its thresholds are the platform's; the data it measured is mine:
+The quality gate (03 · Quality gate, built into the platform) checked the output of my cleaning stage. Its thresholds are the platform's; the data it measured is mine:
 
 | Check | Measured | Must be | Result |
 |---|---|---|---|
@@ -122,14 +122,12 @@ From `outputs/reconciliation_report.json`, produced by my reconciliation stage:
 
 ## Validation
 
-Every stage passed PipelineFab's automated checks on 2026-11-26. What was checked on my stages:
+Every stage passed the platform's automated checks on 2026-11-26. What was checked on my stages:
 
-- **01 · Extract today's customer snapshot:** columns and types match the agreed contract; the output matches a verified result I never saw.
-- **02 · Clean and validate:** columns and types match the agreed contract; every source row ends up either accepted or rejected, none lost or duplicated; the output matches a verified result I never saw.
-- **04 · Apply the snapshot to the customer dimension:** columns and types match the agreed contract; the history is consistent (SCD2 integrity); running it a second time leaves exactly the same result; the output matches a verified result I never saw.
+- **01 · Extract today's customer snapshot:** columns and types match the agreed contract; the output matches the platform's reference result, which stays hidden while I work.
+- **02 · Clean and validate:** columns and types match the agreed contract; every source row ends up either accepted or rejected, none lost or duplicated; the output matches the platform's reference result, which stays hidden while I work.
+- **04 · Apply the snapshot to the customer dimension:** columns and types match the agreed contract; the history is consistent (SCD2 integrity); running it a second time leaves exactly the same result; the output matches the platform's reference result, which stays hidden while I work.
 - **05 · Reconcile:** columns and types match the agreed contract; the reconciliation figures agree with the data.
-
-Help used: none.
 
 ## What I practised
 
@@ -176,7 +174,7 @@ Writes `raw/customers.csv`
 **02 · Clean and validate**  
 Reads `raw/customers.csv` → writes `outputs/clean_customers.csv`, `quarantine/rejected_customers.csv`
 
-**03 · Quality gate** *(provided by PipelineFab)*  
+**03 · Quality gate** *(built into the platform)*  
 Reads `raw/customers.csv`, `outputs/clean_customers.csv`, `quarantine/rejected_customers.csv` → writes `outputs/quality_report.json`, `quarantine/gate_quarantine.csv`
 
 **04 · Apply the snapshot to the customer dimension**  
@@ -247,7 +245,7 @@ Reads `raw/customers.csv`, `outputs/clean_customers.csv`, `quarantine/rejected_c
 <details>
 <summary>Running it</summary>
 
-**Level: showcase.** The code ran inside PipelineFab, which prepared the databases and ran the platform stages; my load script fills its `landing.*` tables from the CSV files itself (BULK INSERT). `$(WorkspaceDir)` in the code is the folder the pipeline ran in, filled in before the script runs (like a SQLCMD variable). It is published to be read, not to be run as is.
+**Showcase only.** The code ran inside PipelineFab, which prepared the databases and ran the platform stages; my load script fills its `landing.*` tables from the CSV files itself (BULK INSERT). `$(WorkspaceDir)` in the code is the folder the pipeline ran in, filled in before the script runs (like a SQLCMD variable). It is published to be read, not to be run as is.
 
 Environment it ran in: SQL Server, Python 3 + pandas.
 

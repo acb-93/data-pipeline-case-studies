@@ -20,4 +20,4 @@ Batch pipelines from my data-engineering practice: extract, clean and quarantine
 - Load that is safe to run twice — [Dimension with history (SCD2)](scd2-dimension/)
 - Reconciliation of counts and totals — [Dimension with history (SCD2)](scd2-dimension/)
 
-Every number in these READMEs comes from the pipeline's own reconciliation output. The scenarios and their synthetic data come from PipelineFab, a practice platform.
+Every number in these READMEs comes from the pipeline's own reconciliation output. The scenarios and their synthetic data come from [PipelineFab](https://acbworkspace.netlify.app/#tours), the practice platform I built.
