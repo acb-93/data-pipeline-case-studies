@@ -181,7 +181,7 @@ Reads `raw/customers.csv`, `outputs/clean_customers.csv`, `quarantine/rejected_c
 Reads `outputs/clean_customers.csv` → writes `scn.DimCustomer`
 
 **05 · Reconcile**  
-Reads `raw/customers.csv`, `outputs/clean_customers.csv`, `quarantine/rejected_customers.csv`, `scn.DimCustomer` → writes `outputs/reconciliation_report.json`
+Reads `raw/customers.csv`, `outputs/clean_customers.csv`, `quarantine/rejected_customers.csv`, `outputs/dim_customers.csv` (export of `scn.DimCustomer`) → writes `outputs/reconciliation_report.json`
 
 
 </details>

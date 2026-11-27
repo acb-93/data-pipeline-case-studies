@@ -1,7 +1,7 @@
 """
 05 · Reconcile (Python)
 
-Reads:  raw/customers.csv, outputs/clean_customers.csv, quarantine/rejected_customers.csv, scn.DimCustomer
+Reads:  raw/customers.csv, outputs/clean_customers.csv, quarantine/rejected_customers.csv, outputs/dim_customers.csv (export of scn.DimCustomer)
 Writes: outputs/reconciliation_report.json
 """
 
