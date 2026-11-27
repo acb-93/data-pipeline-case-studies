@@ -1,0 +1,28 @@
+{
+  "decision": "PASS",
+  "checks": [
+    {
+      "name": "reject_rate",
+      "ok": true,
+      "value": 0.022104,
+      "threshold": 0.04
+    },
+    {
+      "name": "missing_business_keys",
+      "ok": true,
+      "value": 0,
+      "threshold": 0
+    },
+    {
+      "name": "duplicate_key",
+      "ok": true,
+      "value": 0,
+      "threshold": 0
+    }
+  ],
+  "counts": {
+    "source": 6605,
+    "accepted": 6459,
+    "rejected": 146
+  }
+}

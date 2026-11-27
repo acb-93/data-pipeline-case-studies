@@ -1,0 +1,26 @@
+{
+  "folder": "incremental-load",
+  "title": "Cleaning up the weekly orders feed",
+  "pattern": "Incremental load",
+  "blueprint": "incremental_load",
+  "scenario_id": "p004",
+  "tools": [
+    "T-SQL",
+    "pandas",
+    "Python"
+  ],
+  "built": "I wrote the source extract in T-SQL, cleaning and quarantine in pandas, an incremental load in T-SQL that is safe to re-run and a reconciliation report in Python.",
+  "techniques": [
+    "Cleaning and standardising values",
+    "De-duplication, latest version wins",
+    "Quarantine with a reason",
+    "Incremental load (watermark)",
+    "Load that is safe to run twice",
+    "Reconciliation of counts and totals"
+  ],
+  "score": 5.5,
+  "label": "Junior task",
+  "assisted": false,
+  "checked_on": "2026-11-26",
+  "code_sha256": "9b3b4d1c0049755e279aa10aaa5b4906898d3ac95537b36b5bcb658166cce410"
+}

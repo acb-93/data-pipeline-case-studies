@@ -1,0 +1,10 @@
+{
+  "source_rows": 6605,
+  "accepted_rows": 6459,
+  "rejected_rows": 146,
+  "fact_rows": 19906,
+  "source_balances": true,
+  "accepted_in_fact": true,
+  "watermark": "2024-07-01 02:49:19",
+  "watermark_is_latest": true
+}
